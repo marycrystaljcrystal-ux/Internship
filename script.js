@@ -95,3 +95,8 @@ button.addEventListener("click", () => {
     });
 
 });
+// ES6+ Arrow Function for Result Message
+const getResultMessage = ({ name, marks }) =>
+    `${name} has ${marks >= 60 ? "passed" : "not passed"} the assessment.`;
+
+console.log(getResultMessage(student));
