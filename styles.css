@@ -1,0 +1,339 @@
+```css
+/* ================================
+   RESET & BASE STYLES
+================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.6;
+    background-color: #f5f7fb;
+    color: #222;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+
+/* ================================
+   SKIP LINK
+================================ */
+
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 10px;
+}
+
+.skip-link:focus {
+    left: 10px;
+    background: #222;
+    color: #fff;
+    padding: 10px 15px;
+    z-index: 1000;
+}
+
+
+/* ================================
+   HEADER & FLEXBOX NAVIGATION
+================================ */
+
+.site-header {
+    background-color: #1e293b;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-container {
+    min-height: 70px;
+
+    /* FLEXBOX */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.logo:hover {
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+
+/* Navigation Flexbox */
+
+.nav-list {
+    list-style: none;
+
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.nav-list a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 6px;
+
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
+}
+
+.nav-list a:hover,
+.nav-list a:focus {
+    background-color: white;
+    color: #1e293b;
+}
+
+
+/* ================================
+   HERO
+================================ */
+
+.hero {
+    background-color: #e2e8f0;
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+}
+
+.hero p {
+    max-width: 700px;
+    margin: 10px auto;
+}
+
+
+/* ================================
+   SECTIONS
+================================ */
+
+.section {
+    padding: 60px 0;
+}
+
+.section h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
+
+.section > .container > p {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 30px;
+}
+
+
+/* ================================
+   CSS GRID - 3 COLUMN CARDS
+================================ */
+
+.card-grid {
+
+    /* CSS GRID */
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 25px;
+
+    margin-top: 35px;
+}
+
+
+/* ================================
+   CARDS
+================================ */
+
+.card {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+
+    border: 1px solid #e2e8f0;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+    /* TRANSITION */
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+
+/* HOVER EFFECT */
+
+.card:hover {
+    transform: translateY(-8px);
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+
+.card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+}
+
+.card h3 {
+    margin-bottom: 12px;
+    font-size: 1.3rem;
+}
+
+.card p {
+    color: #555;
+    margin-bottom: 20px;
+}
+
+
+/* Card Link */
+
+.card-link {
+    display: inline-block;
+
+    padding: 8px 15px;
+
+    background-color: #1e293b;
+    color: white;
+
+    border-radius: 6px;
+
+    transition:
+        background-color 0.3s ease,
+        transform 0.3s ease;
+}
+
+.card-link:hover {
+    background-color: #334155;
+    transform: translateX(4px);
+}
+
+
+/* ================================
+   RESOURCES
+================================ */
+
+.resources {
+    background-color: #e2e8f0;
+}
+
+.resources ul {
+    max-width: 500px;
+    margin: 20px auto;
+    padding-left: 25px;
+}
+
+
+/* ================================
+   FOOTER
+================================ */
+
+.site-footer {
+    background-color: #1e293b;
+    color: white;
+    text-align: center;
+    padding: 25px 10px;
+}
+
+
+/* ================================
+   RESPONSIVE DESIGN
+================================ */
+
+/* Tablet */
+
+@media (max-width: 768px) {
+
+    .nav-container {
+        flex-direction: column;
+        justify-content: center;
+        padding: 15px 0;
+    }
+
+    .nav-list {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .hero {
+        padding: 60px 20px;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    /* Change Grid to 2 columns */
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+/* Mobile */
+
+@media (max-width: 500px) {
+
+    .container {
+        width: 92%;
+    }
+
+    .nav-list {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .nav-list a {
+        text-align: center;
+        width: 100%;
+    }
+
+    .hero {
+        padding: 50px 15px;
+    }
+
+    .hero h1 {
+        font-size: 1.7rem;
+    }
+
+    /* Change Grid to 1 column */
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .section {
+        padding: 40px 0;
+    }
+}
+```
