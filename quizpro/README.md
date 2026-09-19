@@ -1,58 +1,157 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# QuizPro Online Tests
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+QuizPro is an MCQ (Multiple Choice Question) quiz platform built as part of a Full Stack Development internship project.
 
-## About Laravel
+## Project Overview
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The platform provides backend APIs for creating and managing quizzes and questions. Each quiz can contain multiple questions with four answer options and a correct answer.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Technologies Used
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+* Laravel 13
+* PHP
+* MySQL
+* Laravel Sanctum
+* REST API
+* Git & GitHub
 
-## Learning Laravel
+## Week 2 — Core Feature: Backend API
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+The Week 2 checkpoint focuses on building the core backend APIs for the QuizPro platform.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Features Completed
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+* Quiz CRUD API
+* Question CRUD API
+* Quiz–Question relationship
+* Request validation
+* Database migrations
+* Laravel Sanctum API setup
+* Automated API tests
+* Database persistence
 
-## Agentic Development
+## API Endpoints
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Quiz API
+
+| Method    | Endpoint            | Description     |
+| --------- | ------------------- | --------------- |
+| GET       | `/api/quizzes`      | Get all quizzes |
+| POST      | `/api/quizzes`      | Create a quiz   |
+| GET       | `/api/quizzes/{id}` | Get one quiz    |
+| PUT/PATCH | `/api/quizzes/{id}` | Update a quiz   |
+| DELETE    | `/api/quizzes/{id}` | Delete a quiz   |
+
+### Question API
+
+| Method    | Endpoint              | Description       |
+| --------- | --------------------- | ----------------- |
+| GET       | `/api/questions`      | Get all questions |
+| POST      | `/api/questions`      | Create a question |
+| GET       | `/api/questions/{id}` | Get one question  |
+| PUT/PATCH | `/api/questions/{id}` | Update a question |
+| DELETE    | `/api/questions/{id}` | Delete a question |
+
+## Question Structure
+
+Each question contains:
+
+* Quiz ID
+* Question text
+* Option A
+* Option B
+* Option C
+* Option D
+* Correct answer
+
+## Validation
+
+The Question API validates:
+
+* Quiz ID must exist in the quizzes table
+* Question text is required
+* All four options are required
+* Correct answer must be A, B, C, or D
+
+## Automated Tests
+
+Two automated feature tests were created for the Quiz API:
+
+1. Create a quiz
+2. Get all quizzes
+
+Run the tests with:
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+php artisan test --filter=QuizApiTest
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Test result:
 
-## Contributing
+```text
+2 tests passed
+4 assertions passed
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Database
 
-## Code of Conduct
+The application uses MySQL for storing quiz and question data.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+The `questions` table is connected to the `quizzes` table through `quiz_id`.
 
-## Security Vulnerabilities
+Deleting a quiz also removes its related questions through the configured cascade relationship.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Running the Project
 
-## License
+### 1. Install dependencies
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+composer install
+```
+
+### 2. Configure the environment
+
+Create/configure the `.env` file with your database settings.
+
+### 3. Generate the application key
+
+```bash
+php artisan key:generate
+```
+
+### 4. Run migrations
+
+```bash
+php artisan migrate
+```
+
+### 5. Start the Laravel development server
+
+```bash
+php artisan serve
+```
+
+The application will be available at:
+
+```text
+http://127.0.0.1:8000
+```
+
+## API Testing
+
+The Quiz and Question APIs were tested locally using HTTP requests.
+
+The following operations were successfully tested:
+
+* Create
+* Read
+* Update
+* Delete
+
+Data was successfully stored, retrieved, updated, and deleted from the database.
+
+## Internship Checkpoint
+
+**Checkpoint 2 — Week 2: Core Feature — Backend API**
+
+Status: Completed
