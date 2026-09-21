@@ -1,5 +1,7 @@
 let score = 0;
 let totalQuestions = 0;
+let selectedQuizId = null;
+let quizSubmitted = false;
 
 // ==========================================
 
@@ -152,7 +154,7 @@ fetch("/api/quizzes")
                 <h3>${quiz.title}</h3>
                 <p>${quiz.description ?? "No description available."}</p>
                 <p>Duration: ${quiz.duration_minutes} minutes</p>
-                <button>Start Quiz</button>
+                <button data-quiz-id="${quiz.id}" data-duration="${quiz.duration_minutes}">Start Quiz</button>
             `;
 
             quizList.appendChild(quizCard);
@@ -177,14 +179,29 @@ fetch("/api/quizzes")
 
 
 
- // ==========================================
+// ==========================================
 // Start Quiz and Display Questions
 // ==========================================
 
 document.addEventListener("click", function (event) {
 
     if (event.target.textContent === "Start Quiz") {
-        startTimer();
+
+        const button = event.target;
+
+        selectedQuizId = Number(button.dataset.quizId);
+
+        const duration = Number(button.dataset.duration);
+
+        score = 0;
+        totalQuestions = 0;
+        quizSubmitted = false;
+
+        document.querySelector("#score-result").textContent = "Score: 0 / 0";
+
+        document.querySelector("#review-result").innerHTML = "";
+
+        startTimer(duration);
         fetch("/api/questions")
             .then(response => {
 
@@ -198,57 +215,64 @@ document.addEventListener("click", function (event) {
             .then(questions => {
 
                 const quizList = document.querySelector("#quiz-list");
-                totalQuestions = questions.length;
-                if (questions.length === 0) {
-                    quizList.innerHTML = "<p>No questions available.</p>";
+
+                // Only show questions belonging to the selected quiz
+                const quizQuestions = questions.filter(
+                    question => Number(question.quiz_id) === selectedQuizId
+                );
+
+                totalQuestions = quizQuestions.length;
+
+                if (quizQuestions.length === 0) {
+                    quizList.innerHTML = "<p>No questions available for this quiz.</p>";
                     return;
                 }
 
                 quizList.innerHTML = "";
 
-                questions.forEach((question, index) => {
+                quizQuestions.forEach((question, index) => {
 
                     const questionCard = document.createElement("article");
 
                     questionCard.className = "card";
 
                     questionCard.innerHTML = `
-                        <h3>Question ${index + 1}</h3>
+                <h3>Question ${index + 1}</h3>
 
-                        <p>${question.question_text}</p>
+                <p>${question.question_text}</p>
 
-                        <label>
-                            <input type="radio" name="question_${question.id}" value="A">
-                            ${question.option_a}
-                        </label>
+                <label>
+                    <input type="radio" name="question_${question.id}" value="A">
+                    ${question.option_a}
+                </label>
 
-                        <br>
+                <br>
 
-                        <label>
-                            <input type="radio" name="question_${question.id}" value="B">
-                            ${question.option_b}
-                        </label>
+                <label>
+                    <input type="radio" name="question_${question.id}" value="B">
+                    ${question.option_b}
+                </label>
 
-                        <br>
+                <br>
 
-                        <label>
-                            <input type="radio" name="question_${question.id}" value="C">
-                            ${question.option_c}
-                        </label>
+                <label>
+                    <input type="radio" name="question_${question.id}" value="C">
+                    ${question.option_c}
+                </label>
 
-                        <br>
+                <br>
 
-                        <label>
-                            <input type="radio" name="question_${question.id}" value="D">
-                            ${question.option_d}
-                        </label>
+                <label>
+                    <input type="radio" name="question_${question.id}" value="D">
+                    ${question.option_d}
+                </label>
 
-                        <br><br>
+                <br><br>
 
-                        <button class="submit-answer" data-question-id="${question.id}">
-                            Submit Answer
-                        </button>
-                    `;
+                <button class="submit-answer" data-question-id="${question.id}">
+                    Submit Answer
+                </button>
+            `;
 
                     quizList.appendChild(questionCard);
 
@@ -265,115 +289,219 @@ document.addEventListener("click", function (event) {
                 console.error("Question API Error:", error);
 
             });
-    }
+                }
 
 });
 
 
 
 
+        // ==========================================
+        // Submit Answer + Save Final Result
+        // ==========================================
+
+        document.addEventListener("click", async function (event) {
+
+            if (!event.target.classList.contains("submit-answer")) {
+                return;
+            }
+
+            if (quizSubmitted) {
+                return;
+            }
+
+            const button = event.target;
+            const questionId = button.dataset.questionId;
+
+            // Prevent submitting the same question twice
+            if (button.dataset.submitted === "true") {
+                return;
+            }
+
+            const selectedOption = document.querySelector(
+                `input[name="question_${questionId}"]:checked`
+            );
+
+            if (!selectedOption) {
+                alert("Please select an answer.");
+                return;
+            }
+
+            const selectedAnswer = selectedOption.value;
+
+            try {
+
+                const questionResponse =
+                    await fetch(`/api/questions/${questionId}`);
+
+                if (!questionResponse.ok) {
+                    throw new Error("Unable to check the answer.");
+                }
+
+                const question = await questionResponse.json();
+
+                if (selectedAnswer === question.correct_answer) {
+
+                    score++;
+
+                    alert("Correct!");
+
+                } else {
+
+                    alert(
+                        `Incorrect. The correct answer is ${question.correct_answer}.`
+                    );
+                }
+
+                // Mark this question as submitted
+                button.dataset.submitted = "true";
+                button.disabled = true;
+
+                // Disable the answers for this question
+                document
+                    .querySelectorAll(`input[name="question_${questionId}"]`)
+                    .forEach(input => {
+                        input.disabled = true;
+                    });
+
+                // Update score
+                const scoreResult = document.querySelector("#score-result");
+
+                scoreResult.textContent =
+                    `Score: ${score} / ${totalQuestions}`;
+
+                // Update review
+                const reviewResult = document.querySelector("#review-result");
+
+                reviewResult.innerHTML += `
+            <div>
+                <h3>Question ${questionId}</h3>
+                <p>Your answer: ${selectedAnswer}</p>
+                <p>Correct answer: ${question.correct_answer}</p>
+            </div>
+        `;
+
+                // Check if all questions have been answered
+                const submittedButtons =
+                    document.querySelectorAll(
+                        '.submit-answer[data-submitted="true"]'
+                    );
+
+                if (submittedButtons.length === totalQuestions) {
+                    await submitQuizResult();
+                }
+
+            } catch (error) {
+
+                console.error("Answer Error:", error);
+
+                alert("Unable to check the answer. Please try again.");
+            }
+
+        });
 
 
-// ==========================================
-// Submit Answer
-// ==========================================
+        // ==========================================
+        // Save Final Quiz Result
+        // ==========================================
 
-document.addEventListener("click", async function (event) {
+        async function submitQuizResult() {
 
-    if (event.target.classList.contains("submit-answer")) {
+            if (quizSubmitted) {
+                return;
+            }
 
-        const questionId = event.target.dataset.questionId;
-
-        const selectedOption = document.querySelector(
-            `input[name="question_${questionId}"]:checked`
-        );
-
-        if (!selectedOption) {
-            alert("Please select an answer.");
-            return;
-        }
-        const selectedAnswer = selectedOption.value;
-
-        const questionResponse = await fetch(`/api/questions/${questionId}`);
-
-if (!questionResponse.ok) {
-    alert("Unable to check the answer.");
-    return;
-}
-
-const question = await questionResponse.json();
-
-if (selectedOption.value === question.correct_answer) {
-
-    score++;
-
-    alert("Correct!");
-
-} else {
-
-    alert(`Incorrect. The correct answer is ${question.correct_answer}.`);
-
-}
-const scoreResult = document.querySelector("#score-result");
-
-scoreResult.textContent =
-    `Score: ${score} / ${totalQuestions}`;
-    
-    const reviewResult = document.querySelector("#review-result");
-
-reviewResult.innerHTML = `
-    <h3>Review Answer</h3>
-    <p>Your answer: ${selectedAnswer}</p>
-    <p>Correct answer: ${question.correct_answer}</p>
-`;
-    }
-
-});
-
-
-
-
-
-
-
-// ==========================================
-// Quiz Timer
-// ==========================================
-
-let quizTime = 10 * 60;
-let timerInterval;
-
-function startTimer() {
-
-    const timerDisplay = document.querySelector("#timer");
-
-    clearInterval(timerInterval);
-
-    timerInterval = setInterval(() => {
-
-        const minutes = Math.floor(quizTime / 60);
-        const seconds = quizTime % 60;
-
-        timerDisplay.textContent =
-            `Time Remaining: ${minutes}:${seconds.toString().padStart(2, "0")}`;
-
-        if (quizTime <= 0) {
+            quizSubmitted = true;
 
             clearInterval(timerInterval);
 
-            timerDisplay.textContent = "Time's up!";
+            try {
 
-            alert("Time is up! Your quiz will be submitted.");
+                const response = await fetch("/api/results", {
 
-            // Automatically submit all unanswered questions
-            document.querySelectorAll(".submit-answer").forEach(button => {
-                button.click();
-            });
+                    method: "POST",
 
-            return;
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        quiz_id: selectedQuizId,
+                        student_name: "Mary",
+                        score: score,
+                        total_questions: totalQuestions
+                    })
+
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to save quiz result.");
+                }
+
+                const result = await response.json();
+
+                console.log("Quiz result saved:", result);
+
+                alert("Quiz completed! Your result has been saved.");
+
+            } catch (error) {
+
+                console.error("Result API Error:", error);
+
+                quizSubmitted = false;
+
+                alert(
+                    "Your score was calculated, but the result could not be saved."
+                );
+            }
         }
 
-        quizTime--;
 
-    }, 1000);
-}
+
+
+        // ==========================================
+        // Quiz Timer
+        // ==========================================
+
+        let quizTime = 10 * 60;
+        let timerInterval;
+
+        function startTimer(durationMinutes = 10) {
+
+            const timerDisplay = document.querySelector("#timer");
+
+            clearInterval(timerInterval);
+
+            quizTime = durationMinutes * 60;
+
+            timerDisplay.textContent =
+                `Time Remaining: ${durationMinutes}:00`;
+
+            timerInterval = setInterval(async () => {
+
+                const minutes = Math.floor(quizTime / 60);
+                const seconds = quizTime % 60;
+
+                timerDisplay.textContent =
+                    `Time Remaining: ${minutes}:${seconds
+                        .toString()
+                        .padStart(2, "0")}`;
+
+                if (quizTime <= 0) {
+
+                    clearInterval(timerInterval);
+
+                    timerDisplay.textContent = "Time's up!";
+
+                    alert("Time is up! Your quiz will be submitted.");
+
+                    await submitQuizResult();
+
+                    return;
+                }
+
+                quizTime--;
+
+            }, 1000);
+        }
