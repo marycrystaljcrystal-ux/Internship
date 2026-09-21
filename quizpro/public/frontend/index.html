@@ -1,0 +1,249 @@
+
+DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>QuizPro | Responsive Design - Week 1 Day 4</title>
+
+    <meta
+        name="description"
+        content="QuizPro responsive layout demonstrating mobile-first design and CSS media queries".
+    >
+
+    <meta
+        name="author"
+        content="Mary Crystal"
+    >
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Skip Navigation -->
+    <a href="#main-content" class="skip-link">
+        Skip to main content
+    </a>
+
+    <!-- Header -->
+    <header class="site-header">
+
+        <div class="container nav-container">
+
+            <a href="#" class="logo">
+                QuizPro
+            </a>
+
+            <!-- Flexbox Navigation -->
+            <nav aria-label="Main navigation">
+                <ul class="nav-list">
+
+                    <li>
+                        <a href="#home">Home</a>
+                    </li>
+
+                    <li>
+                        <a href="#learning">Learning</a>
+                    </li>
+
+                    <li>
+                        <a href="#tasks">Tasks</a>
+                    </li>
+
+                    <li>
+                        <a href="#resources">Resources</a>
+                    </li>
+
+                </ul>
+            </nav>
+
+        </div>
+
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content">
+
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+
+            <div class="container">
+
+                <h1>
+                    CSS Flexbox & Grid Layout
+                </h1>
+
+                <p>
+                    Week 1 Day 2 — Responsive UI Components
+                </p>
+
+                <p>
+                    This page demonstrates responsive navigation,
+                    CSS Grid cards, hover effects, and transitions.
+                </p>
+
+            </div>
+
+        </section>
+
+        <!-- Learning Objective -->
+        <section id="learning" class="section">
+
+            <div class="container">
+
+                <h2>
+                    Learning Objective
+                </h2>
+
+                <p>
+                    Master CSS Flexbox and Grid layout systems
+                    to build responsive UI components.
+                </p>
+
+            </div>
+
+        </section>
+
+        <!-- Practical Tasks -->
+        <section id="tasks" class="section">
+
+            <div class="container">
+
+                <h2>
+                    Practical Tasks
+                </h2>
+
+                <!-- CSS Grid -->
+                <div class="card-grid">
+
+                    <article class="card">
+                        <div class="card-icon">🧭</div>
+
+                        <h3>
+                            Flexbox Navigation
+                        </h3>
+
+                        <p>
+                            Build a responsive navigation bar
+                            using CSS Flexbox.
+                        </p>
+
+                        <a href="#" class="card-link">
+                            Learn More
+                        </a>
+                    </article>
+
+
+                    <article class="card">
+                        <div class="card-icon">📐</div>
+
+                        <h3>
+                            CSS Grid
+                        </h3>
+
+                        <p>
+                            Create a responsive three-column
+                            card layout using CSS Grid.
+                        </p>
+
+                        <a href="#" class="card-link">
+                            Learn More
+                        </a>
+                    </article>
+
+
+                    <article class="card">
+                        <div class="card-icon">✨</div>
+
+                        <h3>
+                            Hover & Transitions
+                        </h3>
+
+                        <p>
+                            Add smooth hover effects and
+                            CSS transitions to UI components.
+                        </p>
+
+                        <a href="#" class="card-link">
+                            Learn More
+                        </a>
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Resources -->
+        <section id="resources" class="section resources">
+
+            <div class="container">
+
+                <h2>
+                    Resources
+                </h2>
+
+                <ul>
+                    <li>
+                        CSS Flexbox
+                    </li>
+
+                    <li>
+                        CSS Grid
+                    </li>
+
+                    <li>
+                        Responsive Web Design
+                    </li>
+                </ul>
+
+            </div>
+
+        </section>
+
+    </main>
+<!-- QuizPro Backend Quizzes -->
+<section id="quizzes" class="section">
+
+    <div class="container">
+
+        <h2>Available Quizzes</h2>
+
+<div id="timer"></div>
+
+<div id="quiz-list">
+    <p>Loading quizzes...</p>
+</div>
+<div id="score-result"></div>
+<div id="review-result"></div>
+</section>
+    <!-- Footer -->
+    <footer class="site-footer">
+
+        <div class="container">
+
+            <p>
+                &copy; 2026 Mary Crystal.
+                Week 1 Day 2 CSS Layout Assignment.
+            </p>
+
+        </div>
+
+    </footer>
+    <section>
+    <h2>ES6 Student Results</h2>
+
+    <button id="showStudents">Show Passed Students</button>
+
+    <div id="output"></div>
+</section>
+
+<script src="script.js"></script>
+
+</body>
+</html>

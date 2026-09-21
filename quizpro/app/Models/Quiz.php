@@ -17,8 +17,13 @@ class Quiz extends Model
         'is_active' => 'boolean',
     ];
 
-    public function questions()
+       public function questions()
     {
         return $this->hasMany(Question::class);
+    }
+
+    public function results()
+    {
+        return $this->hasMany(Result::class);
     }
 }
