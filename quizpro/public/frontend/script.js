@@ -505,3 +505,73 @@ document.addEventListener("click", function (event) {
 
             }, 1000);
         }
+
+
+
+
+
+
+
+        // ==========================================
+// Leaderboard - Top 10
+// ==========================================
+
+async function loadLeaderboard() {
+
+    const leaderboardList =
+        document.querySelector("#leaderboard-list");
+
+    try {
+
+        const response =
+            await fetch("/api/results");
+
+        if (!response.ok) {
+            throw new Error("Failed to load leaderboard.");
+        }
+
+        const results = await response.json();
+
+        // Sort results by score from highest to lowest
+        results.sort((a, b) => b.score - a.score);
+
+        // Show only the top 10 results
+        const topResults = results.slice(0, 10);
+
+        if (topResults.length === 0) {
+
+            leaderboardList.innerHTML =
+                "<p>No results available yet.</p>";
+
+            return;
+        }
+
+        leaderboardList.innerHTML = "";
+
+        topResults.forEach((result, index) => {
+
+            const row = document.createElement("div");
+
+            row.className = "card";
+
+            row.innerHTML = `
+                <h3>#${index + 1} ${result.student_name}</h3>
+                <p>Score: ${result.score} / ${result.total_questions}</p>
+            `;
+
+            leaderboardList.appendChild(row);
+
+        });
+
+    } catch (error) {
+
+        console.error("Leaderboard Error:", error);
+
+        leaderboardList.innerHTML =
+            "<p>Unable to load leaderboard.</p>";
+    }
+}
+
+
+// Load leaderboard when page opens
+loadLeaderboard();
