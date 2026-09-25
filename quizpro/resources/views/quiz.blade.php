@@ -157,6 +157,6 @@
         <button class="submit-button">Submit Quiz</button>
 
     </div>
-<script src="/script.js"></script>
+<script src="/frontend/script.js"></script>
 </body>
 </html>
