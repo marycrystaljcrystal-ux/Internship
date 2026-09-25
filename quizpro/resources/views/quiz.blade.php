@@ -147,11 +147,14 @@
     </div>
 
     <div id="review-result"></div>
-
+<div class="card">
+    <h2>Leaderboard</h2>
+    <div id="leaderboard-list">
+        <p>Loading leaderboard...</p>
+    </div>
 </div>
 
 <script src="/frontend/script.js"></script>
-```
 
 </body>
 </html>
