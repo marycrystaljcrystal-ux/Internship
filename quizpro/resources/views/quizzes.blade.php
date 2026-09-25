@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>QuizPro - Available Quizzes</title>
 
     <style>
@@ -43,53 +44,70 @@
         }
 
         .container {
-            padding: 50px;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
         }
 
-        .container h1 {
+        .page-header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
             margin-bottom: 10px;
         }
 
-        .intro {
-            color: #666;
-            margin-bottom: 30px;
+        .page-header p {
+            color: #555;
         }
 
-        .quiz-list {
-            display: flex;
-            gap: 25px;
-            flex-wrap: wrap;
+        #quiz-list {
+            display: grid;
+            gap: 20px;
         }
 
         .quiz-card {
             background: white;
-            width: 300px;
             padding: 25px;
             border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .quiz-card h2 {
-            margin-bottom: 12px;
-        }
-
-        .quiz-card p {
-            color: #666;
             margin-bottom: 10px;
         }
 
-        .button {
-            display: inline-block;
-            margin-top: 15px;
-            background: #2563eb;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 6px;
-            text-decoration: none;
+        .quiz-card p {
+            margin-bottom: 10px;
+            color: #555;
         }
 
-        .button:hover {
+        .quiz-info {
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .start-button {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            padding: 12px 22px;
+            border-radius: 6px;
+        }
+
+        .start-button:hover {
             background: #1d4ed8;
+        }
+
+        .message {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            color: #555;
         }
     </style>
 </head>
@@ -108,44 +126,93 @@
 
     <div class="container">
 
-        <h1>Available Quizzes</h1>
+        <div class="page-header">
+            <h1>Available Quizzes</h1>
 
-        <p class="intro">
-            Choose a quiz and test your knowledge.
-        </p>
+            <p>
+                Choose a quiz and test your knowledge.
+            </p>
+        </div>
 
-        <div class="quiz-list">
+        <div id="quiz-list">
 
-            <div class="quiz-card">
-                <h2>JavaScript Basics</h2>
-                <p>Test your knowledge of JavaScript fundamentals.</p>
-                <p><strong>Questions:</strong> 10</p>
-                <p><strong>Time:</strong> 10 minutes</p>
-
-                <a href="/quiz/1" class="button">Start Quiz</a>
-            </div>
-
-            <div class="quiz-card">
-                <h2>HTML & CSS</h2>
-                <p>Test your understanding of web development basics.</p>
-                <p><strong>Questions:</strong> 10</p>
-                <p><strong>Time:</strong> 10 minutes</p>
-
-                <a href="/quiz/1" class="button">Start Quiz</a>
-            </div>
-
-            <div class="quiz-card">
-                <h2>General Knowledge</h2>
-                <p>Challenge yourself with general knowledge questions.</p>
-                <p><strong>Questions:</strong> 10</p>
-                <p><strong>Time:</strong> 10 minutes</p>
-
-                <a href="/quiz/1" class="button">Start Quiz</a>
+            <div class="message">
+                Loading quizzes...
             </div>
 
         </div>
 
     </div>
+
+    <script>
+        async function loadQuizzes() {
+            const quizList = document.querySelector("#quiz-list");
+
+            try {
+                const response = await fetch("/api/quizzes");
+
+                if (!response.ok) {
+                    throw new Error("Failed to load quizzes");
+                }
+
+                const quizzes = await response.json();
+
+                if (quizzes.length === 0) {
+                    quizList.innerHTML = `
+                        <div class="message">
+                            <p>No quizzes are available right now.</p>
+                        </div>
+                    `;
+
+                    return;
+                }
+
+                quizList.innerHTML = "";
+
+                quizzes.forEach(quiz => {
+
+                    const quizCard = document.createElement("div");
+
+                    quizCard.className = "quiz-card";
+
+                    quizCard.innerHTML = `
+                        <h2>${quiz.title}</h2>
+
+                        <p>
+                            ${quiz.description ?? "No description available."}
+                        </p>
+
+                        <div class="quiz-info">
+                            Time: ${quiz.duration_minutes} minutes
+                        </div>
+
+                        <a
+                            class="start-button"
+                            href="/quiz/${quiz.id}"
+                        >
+                            Start Quiz
+                        </a>
+                    `;
+
+                    quizList.appendChild(quizCard);
+                });
+
+            } catch (error) {
+
+                console.error("Quiz Loading Error:", error);
+
+                quizList.innerHTML = `
+                    <div class="message">
+                        <p>
+                            Unable to load quizzes. Please try again later.
+                        </p>
+                    </div>
+                `;
+            }
+        }
+
+        loadQuizzes();
+    </script>
 
 </body>
 </html>
