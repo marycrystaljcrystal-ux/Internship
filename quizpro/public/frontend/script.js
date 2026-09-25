@@ -88,21 +88,23 @@ console.log(`Average marks: ${averageMarks.toFixed(2)}`);
 const button = document.querySelector("#showStudents");
 const output = document.querySelector("#output");
 
-button.addEventListener("click", () => {
+if (button && output) {
+    button.addEventListener("click", () => {
 
-    output.innerHTML = "";
+        output.innerHTML = "";
 
-    passedStudents.forEach(({ name, marks }) => {
+        passedStudents.forEach(({ name, marks }) => {
 
-        const studentElement = document.createElement("p");
+            const studentElement = document.createElement("p");
 
-        studentElement.textContent =
-            `${name} scored ${marks} marks`;
+            studentElement.textContent =
+                `${name} scored ${marks} marks`;
 
-        output.appendChild(studentElement);
+            output.appendChild(studentElement);
+        });
+
     });
-
-});
+}
 // ES6+ Arrow Function for Result Message
 const getResultMessage = ({ name, marks }) =>
     `${name} has ${marks >= 60 ? "passed" : "not passed"} the assessment.`;
